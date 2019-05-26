@@ -18,7 +18,7 @@ int main(){
             sregex_token_iterator pos(s.cbegin(), s.cend(), reg);
             sregex_token_iterator end;
             for(;pos != end; ++pos){
-                cout << pos->str() << '\n';
+                cout << pos->first - s.begin() << ' ' << pos->str() << '\n';
             }
         }
     }
