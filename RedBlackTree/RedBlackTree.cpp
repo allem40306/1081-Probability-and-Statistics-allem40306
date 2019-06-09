@@ -28,16 +28,19 @@ private:
     void RightRotate(Node *node);
 
     bool Find(Node *root, Node *node);
-
+    Node* minElement(Node *node);
     Node* InsertNode(Node *root, Node *node);
     void fixInsertNode(Node *node);
+
+    Node* DeleteNode(Node *root, int val);
+    void fixDeleteNode(Node *node);
 
     void DepthFirstSearch(Node *node);
 public:
     RedBlackTree();
 
     void Insert(int val);
-
+    void Delete(int val);
     void BepthFirstSearch();
     void DepthFirstSearch();
 private:
@@ -55,6 +58,8 @@ int RedBlackTree::getColor(Node *node){
 }
 
 void RedBlackTree::setColor(Node *node, int color){
+    if(node == nullptr)
+        return;
     node->color = color;
 }
 
@@ -100,6 +105,13 @@ void RedBlackTree::RightRotate(Node *node){
 
     leftChlid->rightChild = node;
     node->parent = leftChlid;
+}
+
+Node* RedBlackTree::minElement(Node *node){
+    Node *tmp = node;
+    while(tmp->leftChild != nullptr)
+        tmp = tmp->leftChild;
+    return tmp;
 }
 
 bool RedBlackTree::Find(Node *root, Node *node){
@@ -191,9 +203,139 @@ void RedBlackTree::fixInsertNode(Node *node){
                 node = parent;
             }
         }
+        setColor(root, black);
         BepthFirstSearch();
     }
     setColor(root, black);
+}
+
+void RedBlackTree::Delete(int val){
+    Node* node = DeleteNode(root, val);
+    // cout << "finish find delete\n";
+    // cout << node->parent->val << '\n';
+    fixDeleteNode(node);
+    // cout << "finish delete fix\n";
+}
+
+Node* RedBlackTree::DeleteNode(Node *root, int val){
+    if(root == nullptr)
+        return root;
+    if(root->val > val)
+        return DeleteNode(root->leftChild, val);
+    if(root->val < val)
+        return DeleteNode(root->rightChild, val);
+    if(root->leftChild == nullptr && root->rightChild == nullptr)
+        return root;
+    
+    Node *predecessor = minElement(root->rightChild);
+    root->val = predecessor->val;
+    return DeleteNode(root->rightChild, predecessor->val);
+}
+
+void RedBlackTree::fixDeleteNode(Node *node){
+    if(node == nullptr)
+        return;
+    if(node == root){
+        root = nullptr;
+        return;
+    }
+    if(getColor(node) == red || getColor(node->leftChild) == red || getColor(node->rightChild) == red){
+        Node *child = ((node->leftChild != nullptr) ? (node->leftChild) : (node->rightChild));
+
+        // connect node's child and parent
+        if(node == node->parent->leftChild){
+            node->parent->leftChild = child;
+        }else{
+            node->parent->rightChild = child;
+        }
+        if(child != nullptr)
+            child->parent = node->parent;
+        setColor(child, black);
+        delete(node);
+        return;
+    }else{
+        Node *parent = nullptr, *sibling = nullptr;
+        Node *ptr = node;
+        setColor(ptr, double_black);
+        CheckDelimiter();
+        while(ptr != root && getColor(ptr) == double_black){
+            parent = ptr->parent;
+            if(ptr == parent->leftChild){
+                sibling = parent->rightChild;
+                if(getColor(sibling) == red){
+                    cout << "Remove Case 3 RR Adjustment\n";
+                    setColor(sibling, black);
+                    setColor(parent, red);
+                    LeftRotate(parent);
+                }else{
+                    if(getColor(sibling->leftChild) == black && getColor(sibling->rightChild) == black){
+                        cout << "Remove Case 2 Recolor\n";
+                        setColor(sibling, red);
+                        if(getColor(parent) == red)
+                            setColor(parent, black);
+                        else
+                            setColor(parent,double_black);
+                        ptr = parent;
+                    }else{
+                        if(getColor(sibling->rightChild) == black){
+                            cout << "Remove Case 1 RL Adjustment\n";
+                            setColor(sibling->leftChild, black);
+                            setColor(sibling, red);
+                            RightRotate(sibling);
+                            sibling = parent->rightChild;
+                        }else{
+                            cout << "Remove Case 1 RR Adjustment\n";
+                        }
+                        setColor(sibling, getColor(parent));
+                        setColor(parent, black);
+                        setColor(sibling->rightChild, black);
+                        LeftRotate(parent);
+                        break;
+                    }
+                }
+            }else{
+                sibling = parent->leftChild;
+                if(getColor(sibling) == red){
+                    cout << "Remove Case 3 LL Adjustment\n";
+                    setColor(sibling, black);
+                    setColor(parent, red);
+                    RightRotate(parent);
+                }else{
+                    if(getColor(sibling->leftChild) == black && getColor(sibling->rightChild) == black){
+                        cout << "Remove Case 2 Recolor\n";
+                        setColor(sibling, red);
+                        if(getColor(parent) == red)
+                            setColor(parent, black);
+                        else
+                            setColor(parent,double_black);
+                        ptr = parent;
+                    }else{
+                        if(getColor(sibling->leftChild) == black){
+                            cout << "Remove Case 1 LR Adjustment\n";
+                            setColor(sibling->rightChild, black);
+                            setColor(sibling, red);
+                            LeftRotate(sibling);
+                            sibling = parent->leftChild;
+                        }else{
+                            cout << "Remove Case 1 LL Adjustment\n";
+                        }
+                        setColor(sibling, getColor(parent));
+                        setColor(parent, black);
+                        setColor(sibling->leftChild, black);
+                        RightRotate(parent);
+                        break;
+                    }
+                }
+            }
+        }
+        if(node == node->parent->leftChild)
+            node->parent->leftChild = nullptr;
+        else
+            node->parent->rightChild = nullptr;
+        delete(node);
+        setColor(root, black);
+        BepthFirstSearch();
+    }
 }
 
 void RedBlackTree::BepthFirstSearch(){
@@ -229,7 +371,10 @@ void RedBlackTree::DepthFirstSearch(){
 }
 
 void RedBlackTree::DepthFirstSearch(Node *node){
-    if(node == nullptr)return;
+    if(node == nullptr){
+        cout << "()";
+        return;
+    }
     cout << node->val;
     if(node->color == red)cout << 'R';
     else cout << 'B';
@@ -243,12 +388,18 @@ int main(){
     int t;
     char ch;
     RedBlackTree rbt;
-    while(cin >> ch >> t){
+    while(cin >> ch){
+        if(ch == 'Q')break;
+        if(ch == 'P'){
+            CheckDelimiter();
+            rbt.BepthFirstSearch();
+            continue;
+        }
+        cin >> t;
         if(ch == 'I'){
             rbt.Insert(t);
-            // rbt.DepthFirstSearch();
-            // cout << "---\n";
-            // rbt.BepthFirstSearch();
+        }else if(ch == 'D'){
+            rbt.Delete(t);
         }
     }
 }
