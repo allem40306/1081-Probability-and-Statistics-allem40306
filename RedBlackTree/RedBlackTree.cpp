@@ -151,7 +151,10 @@ Node* RedBlackTree::InsertNode(Node *root, Node *node){
 
 void RedBlackTree::fixInsertNode(Node *node){
     Node *parent = nullptr, *grandparent = nullptr;
+    bool reviseCase = false;
     while(node != root && getColor(node) == red && getColor(node->parent) == red){
+        if(!reviseCase)CheckDelimiter();
+        reviseCase = true;
         parent = node->parent;
         grandparent = parent->parent;
         if(parent == grandparent->leftChild){
@@ -161,17 +164,14 @@ void RedBlackTree::fixInsertNode(Node *node){
                 setColor(parent, black);
                 setColor(grandparent, red);
                 node = grandparent;
-                CheckDelimiter();
                 cout << "Insert Case 2 Recolor\n";
             }else{
                 if(node == parent->rightChild){
                     LeftRotate(parent);
                     node = parent;
                     parent = node->parent;
-                    CheckDelimiter();
                     cout << "Insert Case 1 LR Adjustment\n";
                 }else{
-                    CheckDelimiter();
                     cout << "Insert Case 1 LL Adjustment\n";
                 }
                 RightRotate(grandparent);
@@ -185,17 +185,14 @@ void RedBlackTree::fixInsertNode(Node *node){
                 setColor(parent, black);
                 setColor(grandparent, red);
                 node = grandparent;
-                CheckDelimiter();
                 cout << "Insert Case 2 Recolor\n";
             }else{
                 if(node == parent->leftChild){
                     RightRotate(parent);
                     node = parent;
                     parent = node->parent;
-                    CheckDelimiter();
                     cout << "Insert Case 1 RL Adjustment\n";
                 }else{
-                    CheckDelimiter();
                     cout << "Insert Case 1 RR Adjustment\n";
                 }
                 LeftRotate(grandparent);
@@ -204,8 +201,8 @@ void RedBlackTree::fixInsertNode(Node *node){
             }
         }
         setColor(root, black);
-        BepthFirstSearch();
     }
+    if(reviseCase)BepthFirstSearch();
     setColor(root, black);
 }
 
@@ -220,14 +217,16 @@ void RedBlackTree::Delete(int val){
 Node* RedBlackTree::DeleteNode(Node *root, int val){
     if(root == nullptr)
         return root;
+    // cout << root->val << '\n';
     if(root->val > val)
         return DeleteNode(root->leftChild, val);
     if(root->val < val)
         return DeleteNode(root->rightChild, val);
-    if(root->leftChild == nullptr && root->rightChild == nullptr)
+    if(root->leftChild == nullptr || root->rightChild == nullptr)
         return root;
     
     Node *predecessor = minElement(root->rightChild);
+    // cout << root->val << ' ' << predecessor->val << '\n';
     root->val = predecessor->val;
     return DeleteNode(root->rightChild, predecessor->val);
 }
@@ -396,6 +395,7 @@ int main(){
             continue;
         }
         cin >> t;
+        // cout << ch << ' ' << t << '\n';
         if(ch == 'I'){
             rbt.Insert(t);
         }else if(ch == 'D'){
