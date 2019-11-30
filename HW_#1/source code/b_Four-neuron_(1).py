@@ -50,7 +50,7 @@ def testData(initial_w, initial_b, isFind, epoch, w, b):
     data = file.readlines()
     file.close()
     
-    file = open('b_Two-neuron_(1).txt', 'w', encoding='UTF-8')
+    file = open('b_Four-neuron_(1).txt', 'w', encoding='UTF-8')
     file.write('The initial weight' + '\n' + str(initial_w) + '\n')
     file.write('The initial bias' + '\n' + str(initial_b) + '\n')
     if isFind == 1:
