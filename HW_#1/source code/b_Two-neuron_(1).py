@@ -76,13 +76,13 @@ def main():
         p1, p2, c = line.replace('\n', '').split(' ') # c(atorgy)
         t = []
         if c[0:1] == 'A':
-            t = [1, 1, 1, 1]
+            t = [1, 0, 0, 0]
         elif c[0:1] == 'B':
-            t = [1, 1, 0, 0]
+            t = [0, 1, 0, 0]
         elif c[0:1] == 'C':
-            t = [0, 0, 1, 1]
+            t = [0, 0, 1, 0]
         elif c[0:1] == 'D':
-            t = [0, 0, 0, 0]
+            t = [0, 0, 0, 1]
         trainingData.append([[int(p1), int(p2)], t])
     initial_w = np.reshape([1, 0, 0, 1, 0, 1, 1, 0], (4, 2))
     initial_b = np.reshape([1, 1, 1, 1], (4, 1))

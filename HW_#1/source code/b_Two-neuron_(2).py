@@ -10,7 +10,7 @@ def f(w, p, b):
     # hardLimit
     for row in res:
         for i in row:
-            if i <= 0:
+            if i < 0:
                 a.append(0)
             else:
                 a.append(1)
@@ -20,11 +20,10 @@ def f(w, p, b):
 def training(w, b, trainingData):
     epoch = 1
     isFind = 0 # isFind = 1 mean find proper w and b that can classify testing_data
-    alpha = 0.5
+    alpha = 0.4
     while 1:
         # print(epoch)
         ok = 1 # ok = 1 mean w and b don't change in one epoch
-        print(epoch)
         for data in trainingData:
             p = data[0]
             t = data[1]
@@ -40,7 +39,6 @@ def training(w, b, trainingData):
             break
         if epoch == 100:
             break
-        alpha -= 0.01
         epoch += 1
     return w, b, epoch, isFind
 
@@ -66,13 +64,13 @@ def testData(initial_w, initial_b, isFind, epoch, w, b):
         p = [[float(shape), float(texture)]]
         a = np.reshape(f(w, p, b), (4, 1))
         # file.write(str(i) + '\n' + str(a) + '\n')
-        if np.array_equal(np.reshape(a, (4 ,1)), np.reshape([1, 1, 1, 1], (4, 1))):
+        if np.array_equal(np.reshape(a, (4 ,1)), np.reshape([1, 0, 0, 0], (4, 1))):
             file.write(str(i) + ':' + 'W\n')
-        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 0, 0], (4, 1))):
+        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 1, 0, 0], (4, 1))):
             file.write(str(i) + ':' + 'P\n') 
-        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 1, 1], (4, 1))):
+        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 1, 0], (4, 1))):
             file.write(str(i) + ':' + 'B\n') 
-        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([1, 1, 0, 0], (4, 1))):
+        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 0, 1], (4, 1))):
             file.write(str(i) + ':' + 'O\n') 
         else:
             file.write(str(i) + ':' + 'can not classfiy\n')
@@ -88,16 +86,16 @@ def main():
         tmp = []
         # print(kind[0:1])
         if kind[0:1] == 'W':
-            tmp = [1, 1, 1, 1]
+            tmp = [1, 0, 0, 0]
         elif kind[0:1] == 'P':
-            tmp = [0, 0, 0, 0]
+            tmp = [0, 1, 0, 0]
         elif kind[0:1] == 'B':
-            tmp = [0, 0, 1, 1]
+            tmp = [0, 0, 1, 0]
         elif kind[0:1] == 'O':
-            tmp = [1, 1, 0, 0]
+            tmp = [0, 0, 0, 1]
         trainingData.append([[float(shape), float(texture)], tmp])
-    initial_w = np.reshape([1, 0.4, 0.4, 1, 1, -2.7, 2.7, -1], (4, 2))
-    initial_b = np.reshape([0, 0, 0, 0], (4, 1))
+    initial_w = np.reshape([1, 1, 2, 1, 1, 2, 2, 1], (4, 2))
+    initial_b = np.reshape([0, 1, 1, 0], (4, 1))
     w, b, epoch, isFind = training(initial_w, initial_b, trainingData)
     testData(initial_w, initial_b, isFind, epoch, w, b)
 

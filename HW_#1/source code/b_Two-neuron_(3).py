@@ -39,7 +39,7 @@ def training(w, b, trainingData):
             break
         if epoch == 10000:
             break
-        alpha -= 0.01
+        alpha -= 0.08
         epoch += 1
     return w, b, epoch, isFind
 
@@ -65,13 +65,13 @@ def testData(initial_w, initial_b, isFind, epoch, w, b):
         p = [[float(shape), float(texture), float(weight)]]
         a = np.reshape(f(w, p, b), (4, 1))
         # file.write(str(i) + '\n' + str(a) + '\n')
-        if np.array_equal(np.reshape(a, (4 ,1)), np.reshape([1, 1, 0, 0], (4, 1))):
+        if np.array_equal(np.reshape(a, (4 ,1)), np.reshape([1, 0, 0, 0], (4, 1))):
             file.write(str(i) + ':' + 'W\n')
-        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([1, 0, 1, 0], (4, 1))):
+        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 1, 0, 0], (4, 1))):
             file.write(str(i) + ':' + 'P\n') 
-        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 1, 0, 1], (4, 1))):
+        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 1, 0], (4, 1))):
             file.write(str(i) + ':' + 'B\n') 
-        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 1, 1], (4, 1))):
+        elif np.array_equal(np.reshape(a, (4 ,1)), np.reshape([0, 0, 0, 1], (4, 1))):
             file.write(str(i) + ':' + 'O\n') 
         else:
             file.write(str(i) + ':' + 'can not classfiy\n')
@@ -87,13 +87,13 @@ def main():
         tmp = []
         # print(kind[0:1])
         if kind[0:1] == 'W':
-            tmp = [1, 1, 0, 0]
+            tmp = [1, 0, 0, 0]
         elif kind[0:1] == 'P':
-            tmp = [1, 0, 1, 0]
+            tmp = [0, 1, 0, 0]
         elif kind[0:1] == 'B':
-            tmp = [0, 1, 0, 1]
+            tmp = [0, 0, 1, 0]
         elif kind[0:1] == 'O':
-            tmp = [0, 0, 1, 1]
+            tmp = [0, 0, 0, 1]
         trainingData.append([[float(shape), float(texture), float(weight)], tmp])
     initial_w = np.reshape([1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1], (4, 3))
     initial_b = np.reshape([1, 1, 1, 1], (4, 1))
