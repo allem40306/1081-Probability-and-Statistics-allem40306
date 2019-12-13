@@ -8,12 +8,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cmath>
+#include <ctime>
 #define PI acos(-1)
 
 int width = 400, height = 400;
 int displayWindow, controlWindow;
 const int POINT_NUM = 7;
 int movePoint = -1;
+int neonLight = 0;
 GLenum style = GL_LINE;
 
 float cpts[2][POINT_NUM][3];
@@ -216,8 +218,121 @@ static void mouse(int button, int state, int x, int y){
     }
 }
 
+static void randomColor()
+{
+    color[0][0] = float(rand() % 11) * 0.1;
+    color[0][1] = float(rand() % 11) * 0.1;
+    color[0][2] = float(rand() % 11) * 0.1;
+}
+
+void toLittle(float &tar, float base)
+{
+    if(tar > base / 2)
+    {
+        tar -= (tar - base / 2) * 0.1;
+    }
+    else
+    {
+        tar += (base / 2 - tar) * 0.1;
+    }
+}
+
+
+void toLarger(float &tar, float base)
+{
+    if(tar > base / 2)
+    {
+        tar += (tar - base / 2) * 0.1;
+    }
+    else
+    {
+        tar -= (base / 2 - tar) * 0.1;
+    }
+}
+
+static void keyBoard(unsigned char key, int x, int y)
+{
+    switch(key)
+    {
+        case 'q': case 'Q':
+            exit(0);
+            break;
+        case 't': case 'T':
+            style = (style == GL_LINE ? GL_FILL: GL_LINE);
+            break;
+        case 'w': case 'W':
+            glutSetWindow(displayWindow);
+            glRotated(-1.0, 1.0, 0.0, 0.0);
+            break;
+        case 's': case 'S':
+            glutSetWindow(displayWindow);
+            glRotated(1.0, 1.0, 0.0, 0.0);
+            break;
+        case 'a': case 'A':
+            glutSetWindow(displayWindow);
+            glRotated(-1.0, 0.0, 0.0, 1.0);
+            break;
+        case 'd': case 'D':
+            glutSetWindow(displayWindow);
+            glRotated(1.0, 0.0, 0.0, 1.0);
+            break;
+        case 'i': case 'I':
+            color[0][0] = fmin(1.0, color[0][0] + 0.1);
+            break;
+        case 'k': case 'K':
+            color[0][0] = fmax(0.0, color[0][0] - 0.1);
+            break;
+        case 'o': case 'O':
+            color[0][1] = fmin(1.0, color[0][1] + 0.1);
+            break;
+        case 'l': case 'L':
+            color[0][1] = fmax(0.0, color[0][1] - 0.1);
+            break;
+        case 'p': case 'P':
+            color[0][2] = fmin(1.0, color[0][2] + 0.1);
+            break;
+        case ';': case ':':
+            color[0][2] = fmax(0.0, color[0][2] - 0.1);
+            break;
+        case '[': case '{':
+            neonLight = 0;
+            break;
+        case ']': case '}':
+            neonLight = 1;
+            break;
+        case 'v': case 'V':
+            for(int i = 0; i != POINT_NUM; ++i)
+            {
+                toLittle(points[i][0], width);
+                toLittle(points[i][1], height);
+                initControlPoints();
+            }
+            break;
+        case 'b': case 'B':
+            for(int i = 0; i != POINT_NUM; ++i)
+            {
+                toLarger(points[i][0], width);
+                toLarger(points[i][1], height);
+                initControlPoints();
+            }
+            break;
+    }
+}
+
+static void idle()
+{
+    glutSetWindow(displayWindow);
+    if(neonLight)
+    {
+        randomColor();
+    }
+    
+    glutPostRedisplay();
+}
+
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     glutInit(&argc, argv);
     glutInitWindowSize(width, height);
 
@@ -231,6 +346,10 @@ int main(int argc, char *argv[])
     glutDisplayFunc(displayVase);
     glutReshapeFunc(reshape);
     glutIdleFunc(displayVase);
+    glutIdleFunc(idle);
+
+
+    glutInitWindowPosition(800, 10);
 
     controlWindow = glutCreateWindow("control");
     initControl();
@@ -238,6 +357,7 @@ int main(int argc, char *argv[])
     glutReshapeFunc(reshape);
     glutMotionFunc(motion);
     glutMouseFunc(mouse);
+    glutKeyboardFunc(keyBoard);
 
     glutMainLoop();
 
