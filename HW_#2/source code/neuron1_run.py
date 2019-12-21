@@ -36,23 +36,23 @@ def activation(p):
             a.append(item * (1. - item))
     return a
 
-def training(trainingData):
-    numOfInput = 4
-    numOfOnput = 3
-    alpha = 0.3
+def training(trainingData, alpha):
+    numOfInput  = 4
+    numOfOutput = 3
+    numOfNeroun = 1
     epoch = 1
-    w1 = np.reshape([0.1, 0.1, 0.1, 0.1], (1, numOfInput))
-    b1 = np.reshape([0.1], (1, 1))
-    w2 = np.reshape([0.1, 0.1, 0.1], (numOfOnput, 1))
-    b2 = np.reshape([0.1, 0.1, 0.1], (numOfOnput, 1))
+    w1 = np.reshape([0.1, 0.1, 0.1, 0.1], (numOfNeroun, numOfInput))
+    b1 = np.reshape([0.1], (numOfNeroun, 1))
+    w2 = np.reshape([0.1, 0.1, 0.1], (numOfOutput, numOfNeroun))
+    b2 = np.reshape([0.1, 0.1, 0.1], (numOfOutput, 1))
     while 1:
         for data in trainingData:
             p = np.reshape(data[0], (numOfInput, 1))
-            t = np.reshape(data[1], (numOfOnput, 1))
-            ah1 = np.reshape(f(w1, p, b1), (1, 1))
-            o = np.reshape(f(w2, ah1, b2), (numOfOnput, 1))
-            d2 = (t - o) * np.reshape(activation(o), (numOfOnput, 1))
-            d1 = np.dot(np.dot(np.reshape(w2, (1, numOfOnput)), d2), activation(ah1))
+            t = np.reshape(data[1], (numOfOutput, 1))
+            ah1 = np.reshape(f(w1, p, b1), (numOfNeroun, 1))
+            o = np.reshape(f(w2, ah1, b2), (numOfOutput, 1))
+            d2 = (t - o) * np.reshape(activation(o), (numOfOutput, 1))
+            d1 = np.dot(np.reshape(w2, (numOfNeroun, numOfOutput)), d2) * np.reshape(activation(ah1), (numOfNeroun, 1))
 
             w2 += 2 * alpha * np.dot(d2, ah1)
             b2 += 2 * alpha * d2
@@ -62,9 +62,9 @@ def training(trainingData):
         totalError = 0.0
         for data in trainingData:
             p = np.reshape(data[0], (numOfInput, 1))
-            t = np.reshape(data[1], (numOfOnput, 1))
-            ah1 = np.reshape(f(w1, p, b1), (1, 1))
-            o = np.reshape(f(w2, ah1, b2), (numOfOnput, 1))
+            t = np.reshape(data[1], (numOfOutput, 1))
+            ah1 = np.reshape(f(w1, p, b1), (numOfNeroun, 1))
+            o = np.reshape(f(w2, ah1, b2), (numOfOutput, 1))
             totalError += abs((t - o))
 
         # print(max(totalError) / 120)
@@ -77,15 +77,16 @@ def training(trainingData):
 
 def testData(testingData, w1, b1, w2, b2):
     numOfInput = 4
-    numOfOnput = 3
+    numOfOutput = 3
+    numOfNeroun = 1
     accuracies = 0.0
     sz = 0
     for data in testingData:
         sz += 1
         p = np.reshape(data[0], (numOfInput, 1))
-        t = np.reshape(data[1], (numOfOnput, 1))
-        ah1 = np.reshape(f(w1, p, b1), (1, 1))
-        o = np.reshape(f(w2, ah1, b2), (numOfOnput, 1))
+        t = np.reshape(data[1], (numOfOutput, 1))
+        ah1 = np.reshape(f(w1, p, b1), (numOfNeroun, 1))
+        o = np.reshape(f(w2, ah1, b2), (numOfOutput, 1))
 
         d = (1 - abs(o - t)) * 10 / 9
         accuracies += sum(d)
@@ -96,12 +97,16 @@ def testData(testingData, w1, b1, w2, b2):
 def main():
     trainingData = readData('iris_training_data.txt')
     testingData = readData('iris_testing_data.txt')
-    w1, b1, w2, b2, epoch = training(trainingData)
-    # print('Number of hidden neurons = 1')
-    # print('Learning rates = 1')
-    print('training accuracies = ' + '%.2f'%(testData(trainingData, w1, b1, w2, b2)) + '%')
-    print('testing  accuracies = ' + '%.2f'%(testData(testingData,  w1, b1, w2, b2)) + '%')
-    print('epochs = ' + str(epoch))
+    alpha = 0.1
+    for i in range(0, 20):
+        w1, b1, w2, b2, epoch = training(trainingData, alpha)
+        print('Number of hidden neurons = 1')
+        print('Learning rates = ' + '%.1f'%(alpha))
+        print('training accuracies = ' + '%.2f'%(testData(trainingData, w1, b1, w2, b2)) + '%')
+        print('testing  accuracies = ' + '%.2f'%(testData(testingData,  w1, b1, w2, b2)) + '%')
+        print('epochs = ' + str(epoch))
+        print()
+        alpha += 0.1
 
 if __name__ == '__main__':
     main()
