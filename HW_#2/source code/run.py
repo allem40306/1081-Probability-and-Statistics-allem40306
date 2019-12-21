@@ -87,8 +87,7 @@ def testData(testingData, w1, b1, w2, b2):
         ah1 = np.reshape(f(w1, p, b1), (1, 1))
         o = np.reshape(f(w2, ah1, b2), (numOfOnput, 1))
 
-        d = abs(o / t - t)
-        print(d)
+        d = (1 - abs(o - t)) * 10 / 9
         accuracies += sum(d)
 
     return accuracies[0] / (sz * 3) * 100
@@ -100,8 +99,8 @@ def main():
     w1, b1, w2, b2, epoch = training(trainingData)
     # print('Number of hidden neurons = 1')
     # print('Learning rates = 1')
-    print('training accuracies = ' + str(testData(trainingData, w1, b1, w2, b2)) + '%')
-    print('testing  accuracies = ' + str(testData(testingData, w1, b1, w2, b2)) + '%')
+    print('training accuracies = ' + '%.2f'%(testData(trainingData, w1, b1, w2, b2)) + '%')
+    print('testing  accuracies = ' + '%.2f'%(testData(testingData,  w1, b1, w2, b2)) + '%')
     print('epochs = ' + str(epoch))
 
 if __name__ == '__main__':
