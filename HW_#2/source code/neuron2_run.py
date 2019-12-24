@@ -98,14 +98,14 @@ def main():
     trainingData = readData('iris_training_data.txt')
     testingData = readData('iris_testing_data.txt')
     alpha = 0.1
+    file = open('neuron2_run.txt', 'w', encoding='UTF-8')
     for i in range(0, 20):
         w1, b1, w2, b2, epoch = training(trainingData, alpha)
-        print('Number of hidden neurons = 2')
-        print('Learning rates = ' + '%.1f'%(alpha))
-        print('training accuracies = ' + '%.2f'%(testData(trainingData, w1, b1, w2, b2)) + '%')
-        print('testing  accuracies = ' + '%.2f'%(testData(testingData,  w1, b1, w2, b2)) + '%')
-        print('epochs = ' + str(epoch))
-        print()
+        file.write('Number of hidden neurons = 2\n')
+        file.write('Learning rates = ' + '%.1f'%(alpha))
+        file.write('training accuracies = ' + '%.2f'%(testData(trainingData, w1, b1, w2, b2)) + '%\n')
+        file.write('testing  accuracies = ' + '%.2f'%(testData(testingData,  w1, b1, w2, b2)) + '%\n')
+        file.write('epochs = ' + str(epoch) + '\n\n')
         alpha += 0.1
 
 if __name__ == '__main__':
