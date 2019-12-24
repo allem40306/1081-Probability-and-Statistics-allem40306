@@ -23,6 +23,7 @@ def readData(filename):
 
 def f(w, p, b):
     res = np.dot(w, p) + b
+    # log sigmoid
     a = []
     for row in res:
         for item in row:
@@ -59,6 +60,7 @@ def training(trainingData, alpha):
             w1 += 2 * alpha * np.dot(d1, np.reshape(p, (1,numOfInput)))
             b1 += 2 * alpha * d1
         
+        # mean absolute error
         totalError = 0.0
         for data in trainingData:
             p = np.reshape(data[0], (numOfInput, 1))
@@ -66,8 +68,6 @@ def training(trainingData, alpha):
             ah1 = np.reshape(f(w1, p, b1), (numOfNeroun, 1))
             o = np.reshape(f(w2, ah1, b2), (numOfOutput, 1))
             totalError += abs((t - o))
-
-        # print(max(totalError) / 120)
 
         if epoch == 1000 or max(totalError) / 120 < 0.28:
             break
