@@ -1,7 +1,10 @@
 #include <GL/glut.h>
+#include <iostream>
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+
+using namespace std;
 
 #define PI 3.14159265358979323846f
 
@@ -202,11 +205,11 @@ void RightArm()
 {
     glPushMatrix();
     glTranslatef(TORSO_RADIUS + 0.1 * JOINT_RADIUS, 0.8 * TORSO_HEIGHT, 0.0);
-    
+
     // shoulder
     glColor3f(0.8549, 0.64706, 0.12549);
     gluSphere(h, 0.7 * JOINT_RADIUS, 20, 20);
-    
+
     // arms
     for (int i = 0; i < 2; i++)
     {
@@ -241,7 +244,7 @@ void LeftArm()
     // shoulder
     glColor3f(0.8549, 0.64706, 0.12549);
     gluSphere(h, 0.7 * JOINT_RADIUS, 20, 20);
-    
+
     // arms
     for (int i = 0; i < 2; i++)
     {
@@ -281,8 +284,8 @@ void RightLeg()
     glTranslatef(0.0, -0.3 * JOINT_RADIUS, 0.0);
     glPushMatrix();
     glRotatef(90.0, 1.0, 0.0, 0.0);
-    gluCylinder(t, 0.6 * UPPER_LEG_RADIUS, 0.6 * UPPER_LEG_RADIUS, UPPER_LEG_HEIGHT,
-                30, 30);
+    gluCylinder(t, 0.6 * UPPER_LEG_RADIUS, 0.6 * UPPER_LEG_RADIUS,
+                UPPER_LEG_HEIGHT, 30, 30);
     glPopMatrix();
 
     glTranslatef(0.0, -UPPER_LEG_HEIGHT - 0.3 * JOINT_RADIUS, 0.0);
@@ -293,8 +296,8 @@ void RightLeg()
 
     glPushMatrix();
     glRotatef(90.0, 1.0, 0.0, 0.0);
-    gluCylinder(t, 1.2 * LOWER_LEG_RADIUS, 1.2 * LOWER_LEG_RADIUS, LOWER_LEG_HEIGHT,
-                30, 30);
+    gluCylinder(t, 1.2 * LOWER_LEG_RADIUS, 1.2 * LOWER_LEG_RADIUS,
+                LOWER_LEG_HEIGHT, 30, 30);
     glPopMatrix();
 
     glPopMatrix();
@@ -313,8 +316,8 @@ void LeftLeg()
     glTranslatef(0.0, -0.3 * JOINT_RADIUS, 0.0);
     glPushMatrix();
     glRotatef(90.0, 1.0, 0.0, 0.0);
-    gluCylinder(t, 0.6 * UPPER_LEG_RADIUS, 0.6 * UPPER_LEG_RADIUS, UPPER_LEG_HEIGHT,
-                30, 30);
+    gluCylinder(t, 0.6 * UPPER_LEG_RADIUS, 0.6 * UPPER_LEG_RADIUS,
+                UPPER_LEG_HEIGHT, 30, 30);
     glPopMatrix();
 
     glTranslatef(0.0, -UPPER_LEG_HEIGHT - 0.4 * JOINT_RADIUS, 0.0);
@@ -325,8 +328,8 @@ void LeftLeg()
     glTranslatef(0.0, -0.3 * JOINT_RADIUS, 0.0);
     glPushMatrix();
     glRotatef(90.0, 1.0, 0.0, 0.0);
-    gluCylinder(t, 1.2 * LOWER_LEG_RADIUS, 1.2 * LOWER_LEG_RADIUS, LOWER_LEG_HEIGHT,
-                30, 30);
+    gluCylinder(t, 1.2 * LOWER_LEG_RADIUS, 1.2 * LOWER_LEG_RADIUS,
+                LOWER_LEG_HEIGHT, 30, 30);
     glPopMatrix();
 
     glPopMatrix();
@@ -460,14 +463,14 @@ void keyboard(int key, int x, int y)
     }
 }
 
-void Reduction()
+void resetRotate()
 {
     Change(torsoRotate, 0.0, 0.0, 0.0);
     Change(robotRotate, 0.0, 0.0, 0.0);
     Change(headRotate, 0.0, 0.0, 0.0);
-    Change(leftUpArmRotate, 0.0, 0.0, -30.0);
+    Change(leftUpArmRotate, 0.0, 0.0, -45.0);
     Change(leftLowArmRotate, 0.0, 0.0, 0.0);
-    Change(rightUpArmRotate, 0.0, 0.0, 30.0);
+    Change(rightUpArmRotate, 0.0, 0.0, 45.0);
     Change(rightLowArmRotate, 0.0, 0.0, 0.0);
     Change(leftUpLegRotate, 0.0, 0.0, 0.0);
     Change(leftLowLegRotate, 0.0, 0.0, 0.0);
@@ -480,42 +483,22 @@ void menu(int id)
     switch (id)
     {
     case 0:
+        actionNum = 0;
         init_Rot[0] = 0.0;
         init_Rot[1] = 0.0;
         init_Rot[2] = 0.0;
-        actionNum = 0;
+        init_Pos[0] = -0.5;
+        init_Pos[1] = 5.0;
+        init_Pos[2] = 0.0;
+        resetRotate();
         glutPostRedisplay();
         break;
     case 1:
-        init_Pos[0] = 0.0;
-        init_Pos[1] = 5.0;
-        init_Pos[2] = 0.0;
-        actionNum = 0;
-        glutPostRedisplay();
-        break;
     case 2:
-        Reduction();
-        actionNum = 0;
-        glutPostRedisplay();
-        break;
     case 3:
-        Reduction();
-        actionNum = 1;
-        glutPostRedisplay();
-        break;
     case 4:
-        Reduction();
-        actionNum = 2;
-        glutPostRedisplay();
-        break;
-    case 5:
-        Reduction();
-        actionNum = 3;
-        glutPostRedisplay();
-        break;
-    case 6:
-        Reduction();
-        actionNum = 4;
+        resetRotate();
+        actionNum = id;
         glutPostRedisplay();
         break;
     case 9:
@@ -526,22 +509,103 @@ void menu(int id)
     }
 }
 
-void run(int time)
+void cheer(int time)
+{
+    switch (time % 2)
+    {
+    case 0:
+        Change(leftUpArmRotate, 0.0, 0.0, -180.0);
+        Change(rightUpArmRotate, 0.0, 0.0, -180.0);
+        break;
+    case 1:
+        Change(leftUpArmRotate, 0.0, 0.0, 0.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 0.0);
+        break;
+    default:
+        break;
+    }
+}
+
+void dance(int time)
 {
     switch (time % 4)
     {
     case 0:
-        Change(leftUpArmRotate, -60.0, 0.0, -40.0);
-        Change(leftLowArmRotate, -65.0, 0.0, 40.0);
-        Change(rightUpArmRotate, 60.0, 0.0, 40.0);
-        Change(rightLowArmRotate, -65.0, 0.0, -20.0);
+        Change(leftUpArmRotate, 180.0, 0.0, 0.0);
+        Change(leftLowArmRotate, 0.0, 0.0, 0.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 90.0);
+        Change(rightLowArmRotate, 0.0, 0.0, 0.0);
 
-        Change(leftUpLegRotate, 60.0, 0.0, 0.0);
-        Change(leftLowLegRotate, 40.0, 0.0, 0.0);
-        Change(rightUpLegRotate, -60.0, 0.0, 0.0);
-        Change(rightLowLegRotate, 40.0, 0.0, 0.0);
+        Change(leftUpLegRotate, 0.0, 0.0, 0.0);
+        Change(leftLowLegRotate, 0.0, 0.0, 0.0);
+        Change(rightUpLegRotate, 0.0, 0.0, 60.0);
+        Change(rightLowLegRotate, 0.0, 0.0, -40.0);
+        break;
+    case 2:
+        Change(leftUpArmRotate, 0.0, 0.0, -90.0);
+        Change(leftLowArmRotate, 0.0, 0.0, 0.0);
+        Change(rightUpArmRotate, -180.0, 0.0, 0.0);
+        Change(rightLowArmRotate, 0.0, 0.0, 0.0);
+
+        Change(leftUpLegRotate, 0.0, 0.0, -60.0);
+        Change(leftLowLegRotate, 0.0, 0.0, 40.0);
+        Change(rightUpLegRotate, 0.0, 0.0, 0.0);
+        Change(rightLowLegRotate, 0.0, 0.0, 0.0);
         break;
     case 1:
+    case 3:
+        Change(leftUpArmRotate, 0.0, 0.0, 0.0);
+        Change(leftLowArmRotate, 0.0, 0.0, 0.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 0.0);
+        Change(rightLowArmRotate, 0.0, 0.0, 0.0);
+
+        Change(leftUpLegRotate, 0.0, 0.0, 0.0);
+        Change(leftLowLegRotate, 0.0, 0.0, 0.0);
+        Change(rightUpLegRotate, 0.0, 0.0, 0.0);
+        Change(rightLowLegRotate, 0.0, 0.0, 0.0);
+        break;
+    default:
+        break;
+    }
+}
+
+void swim(int time)
+{
+    Change(robotRotate, 70.0, 0.0, 0.0);
+    switch (time % 6)
+    {
+    case 0:
+    case 3:
+        Change(leftUpArmRotate, 0.0, 0, 180.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 180.0);
+        break;
+    case 1:
+        Change(leftUpArmRotate, 120.0, 0, 180.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 180.0);
+        break;
+    case 2:
+        Change(leftUpArmRotate, -120.0, 0, 180.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 180.0);
+        break;
+    case 4:
+        Change(leftUpArmRotate, 0.0, 0, 180.0);
+        Change(rightUpArmRotate, 120.0, 0.0, 180.0);
+        break;
+    case 5:
+        Change(leftUpArmRotate, 0.0, 0, 180.0);
+        Change(rightUpArmRotate, -120.0, 0.0, 180.0);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void kick(int time)
+{
+    switch (time % 3)
+    {
+    case 0:
         Change(leftUpArmRotate, 0.0, 0.0, -40.0);
         Change(leftLowArmRotate, -65.0, 0.0, 40.0);
         Change(rightUpArmRotate, 0.0, 0.0, 40.0);
@@ -549,90 +613,30 @@ void run(int time)
 
         Change(leftUpLegRotate, 0.0, 0.0, 0.0);
         Change(leftLowLegRotate, 10.0, 0.0, 0.0);
+        Change(rightUpLegRotate, 0.0, 0.0, 0.0);
+        Change(rightLowLegRotate, 10.0, 0.0, 0.0);
+        break;
+    case 1:
+        Change(leftUpArmRotate, 120.0, 0.0, -40.0);
+        Change(leftLowArmRotate, -65.0, 0.0, 40.0);
+        Change(rightUpArmRotate, 0.0, 0.0, 40.0);
+        Change(rightLowArmRotate, -65.0, 0.0, -20.0);
+
+        Change(leftUpLegRotate, 0.0, 0.0, 0.0);
+        Change(leftLowLegRotate, 90.0, 0.0, 0.0);
         Change(rightUpLegRotate, 0.0, 0.0, 0.0);
         Change(rightLowLegRotate, 10.0, 0.0, 0.0);
         break;
     case 2:
-        Change(leftUpArmRotate, 60.0, 0.0, -40.0);
-        Change(leftLowArmRotate, -65.0, 0.0, 40.0);
-        Change(rightUpArmRotate, -60.0, 0.0, 40.0);
-        Change(rightLowArmRotate, -65.0, 0.0, -20.0);
-
-        Change(leftUpLegRotate, -60.0, 0.0, 0.0);
-        Change(leftLowLegRotate, 40.0, 0.0, 0.0);
-        Change(rightUpLegRotate, 60.0, 0.0, 0.0);
-        Change(rightLowLegRotate, 40.0, 0.0, 0.0);
-        break;
-    case 3:
         Change(leftUpArmRotate, 0.0, 0.0, -40.0);
         Change(leftLowArmRotate, -65.0, 0.0, 40.0);
         Change(rightUpArmRotate, 0.0, 0.0, 40.0);
         Change(rightLowArmRotate, -65.0, 0.0, -20.0);
 
         Change(leftUpLegRotate, 0.0, 0.0, 0.0);
-        Change(leftLowLegRotate, 10.0, 0.0, 0.0);
+        Change(leftLowLegRotate, -60.0, 0.0, 0.0);
         Change(rightUpLegRotate, 0.0, 0.0, 0.0);
         Change(rightLowLegRotate, 10.0, 0.0, 0.0);
-        break;
-    default:
-        break;
-    }
-}
-
-void fly(int time)
-{
-    Change(robotRotate, 70.0, 0.0, 0.0);
-    switch (time % 2)
-    {
-    case 0:
-
-        Change(leftUpArmRotate, -30.0, -90.0, -90.0);
-        Change(rightUpArmRotate, 0.0, 0.0, 180.0);
-
-        break;
-    case 1:
-
-        Change(leftUpArmRotate, -30.0, -30.0, -90.0);
-        Change(rightUpArmRotate, 0.0, 0.0, 180.0);
-
-        break;
-
-    default:
-        break;
-    }
-}
-
-void Jump(int time)
-{
-    switch (time % 2)
-    {
-    case 0:
-        init_Pos[1] = 5.0;
-
-        Change(leftUpArmRotate, 0.0, 60.0, -90.0);
-        Change(leftLowArmRotate, 0.0, 0.0, -140.0);
-        Change(rightUpArmRotate, 0.0, -60.0, 90.0);
-        Change(rightLowArmRotate, 0.0, 0.0, 140.0);
-
-        Change(leftUpLegRotate, -40.0, 0.0, 0.0);
-        Change(leftLowLegRotate, 100.0, 0.0, 0.0);
-        Change(rightUpLegRotate, -40.0, 0.0, 0.0);
-        Change(rightLowLegRotate, 100.0, 0.0, 0.0);
-
-        break;
-    case 1:
-        init_Pos[1] = 8.0;
-
-        Change(leftUpArmRotate, 0.0, 60.0, -140.0);
-        Change(leftLowArmRotate, 0.0, 0.0, 0.0);
-        Change(rightUpArmRotate, 0.0, -60.0, 140.0);
-        Change(rightLowArmRotate, 0.0, 0.0, 0.0);
-
-        Change(rightUpLegRotate, 0.0, 0.0, 30.0);
-        Change(rightLowLegRotate, 0.0, 0.0, 0.0);
-        Change(leftUpLegRotate, 0.0, 0.0, -30.0);
-        Change(leftLowLegRotate, 0.0, 0.0, 0.0);
-
         break;
 
     default:
@@ -647,16 +651,16 @@ void action()
     switch (actionNum)
     {
     case 1:
-        Change(leftUpArmRotate, 0.0, 0.0, -180.0);
+        cheer(time_box);
         break;
     case 2:
-        fly(time_box);
+        swim(time_box);
         break;
     case 3:
-        run(time_box);
+        dance(time_box);
         break;
     case 4:
-        Jump(time_box);
+        kick(time_box);
         break;
     default:
         break;
@@ -673,13 +677,11 @@ int main(int argc, char *argv[])
     glutCreateWindow("Robot");
     init();
     glutCreateMenu(menu);
-    glutAddMenuEntry("angle reduction", 0);
-    glutAddMenuEntry("position reduction", 1);
-    glutAddMenuEntry("reduction", 2);
-    glutAddMenuEntry("hand-up", 3);
-    glutAddMenuEntry("fly", 4);
-    glutAddMenuEntry("run", 5);
-    glutAddMenuEntry("jump", 6);
+    glutAddMenuEntry("reset", 0);
+    glutAddMenuEntry("cheer", 1);
+    glutAddMenuEntry("swim", 2);
+    glutAddMenuEntry("dance", 3);
+    glutAddMenuEntry("kick", 4);
     glutAddMenuEntry("quit", 9);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
