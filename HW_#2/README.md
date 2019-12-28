@@ -8,6 +8,10 @@
   * neuron1_run.py
 * Two neuron
   * neuron2_run.py
+* Three neuron 
+  * neuron3_run.py
+* Four neuron
+  * neuron4_run.py
 
 ## Usage
 * python環境
