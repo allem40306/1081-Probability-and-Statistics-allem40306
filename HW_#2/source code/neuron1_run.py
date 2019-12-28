@@ -104,7 +104,7 @@ def main():
     trainingData = readData('iris_training_data.txt')
     testingData = readData('iris_testing_data.txt')
     file = open('neuron1_run.txt', 'w', encoding='UTF-8')
-    for alpha in (0.1, 0.3, 0.6):
+    for alpha in (0.1, 0.2, 0.3, 0.4, 0.5):
         w1, b1, w2, b2, epoch = training(trainingData, alpha)
         file.write('Number of hidden neurons = 1\n')
         file.write('Learning rates = ' + '%.1f'%(alpha) + '\n')
