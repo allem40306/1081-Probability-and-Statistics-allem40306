@@ -75,11 +75,18 @@ def training(trainingData, alpha):
 
     return w1, b1, w2, b2, epoch
 
+def maxClass(p):
+    ans = 0
+    for i in range(0, len(p)):
+        if p[i] > p[ans]:
+            ans = i
+    return ans
+
 def testData(testingData, w1, b1, w2, b2):
     numOfInput = 4
     numOfOutput = 3
     numOfNeroun = 2
-    accuracies = 0.0
+    accuracies = 0
     sz = 0
     for data in testingData:
         sz += 1
@@ -88,25 +95,22 @@ def testData(testingData, w1, b1, w2, b2):
         ah1 = np.reshape(f(w1, p, b1), (numOfNeroun, 1))
         o = np.reshape(f(w2, ah1, b2), (numOfOutput, 1))
 
-        d = (1 - abs(o - t)) * 10 / 9
-        accuracies += sum(d)
-
-    return accuracies[0] / (sz * 3) * 100
+        if maxClass(o) == maxClass(t):
+            accuracies += 1
+    return (accuracies / sz) * 100.0
 
 
 def main():
     trainingData = readData('iris_training_data.txt')
     testingData = readData('iris_testing_data.txt')
-    alpha = 0.1
     file = open('neuron2_run.txt', 'w', encoding='UTF-8')
-    for i in range(0, 20):
+    for alpha in (0.1, 0.3, 0.6):
         w1, b1, w2, b2, epoch = training(trainingData, alpha)
         file.write('Number of hidden neurons = 2\n')
-        file.write('Learning rates = ' + '%.1f'%(alpha))
+        file.write('Learning rates = ' + '%.1f'%(alpha) + '\n')
         file.write('training accuracies = ' + '%.2f'%(testData(trainingData, w1, b1, w2, b2)) + '%\n')
         file.write('testing  accuracies = ' + '%.2f'%(testData(testingData,  w1, b1, w2, b2)) + '%\n')
         file.write('epochs = ' + str(epoch) + '\n\n')
-        alpha += 0.1
 
 if __name__ == '__main__':
     main()
