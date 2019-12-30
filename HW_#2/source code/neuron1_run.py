@@ -53,7 +53,7 @@ def training(trainingData, alpha):
             ah1 = np.reshape(f(w1, p, b1), (numOfNeroun, 1))
             o = np.reshape(f(w2, ah1, b2), (numOfOutput, 1))
             d2 = (t - o) * np.reshape(activation(o), (numOfOutput, 1))
-            d1 = np.dot(np.reshape(w2, (numOfNeroun, numOfOutput)), d2) * np.reshape(activation(ah1), (numOfNeroun, 1))
+            d1 = np.dot(w2.T, d2) * np.reshape(activation(ah1), (numOfNeroun, 1))
 
             w2 += 2 * alpha * np.dot(d2, ah1)
             b2 += 2 * alpha * d2
