@@ -29,6 +29,15 @@
       "limits": "cpp",
       "*.tcc": "cpp",
       "type_traits": "cpp",
-      "typeinfo": "cpp"
+      "typeinfo": "cpp",
+      "deque": "cpp",
+      "string": "cpp",
+      "vector": "cpp",
+      "optional": "cpp",
+      "memory": "cpp",
+      "fstream": "cpp",
+      "istream": "cpp",
+      "ostream": "cpp",
+      "string_view": "cpp"
     }
   }
