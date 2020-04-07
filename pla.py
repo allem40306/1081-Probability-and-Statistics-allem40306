@@ -66,15 +66,17 @@ def draw(trainingData, a, b, c, picName):
     linex = [-zoom,-c/a,0,zoom]
     liney = [-(-zoom*a+c)/b,0,-c/b,-(zoom*a+c)/b]
     plt.plot(linex, liney, 'y')
+    plt.title(str(a)+'x+'+str(b)+'y+'+str(c)+'=0')
     plt.draw()
-    plt.pause(3)
+    plt.pause(1)
     plt.savefig('plc_' + picName + '.png')
     plt.close()
 
 
 
 def main():
-    dataName = 'dataset1'
+    num = input("choose dataset [1~4]: ")
+    dataName = 'dataset' + num
     file = open(dataName + '.txt', 'r', encoding='UTF-8')
     data = file.readlines()
     trainingData = []
@@ -86,15 +88,15 @@ def main():
     initial_b = np.reshape([1], (1, 1))
     w, b, epoch, isFind = training(initial_w, initial_b, trainingData)
 
-    print('The initial weight' + '\n' + str(initial_w) + '\n')
-    print('The initial bias' + '\n' + str(initial_b) + '\n')
+    print('The initial weight: ' + str(initial_w))
+    print('The initial bias: ' + str(initial_b))
     if isFind == 1:
-        print('Find proper w and b. The num of epoch: ' + str(epoch) + '\n')
+        print('Find proper w and b. The num of epoch: ' + str(epoch))
     else:
-        print('Not Find proper w and b. The maxiunm num of epoch: ' + str(epoch) + '\n')
-    print('The weight:\n' + str(w) + '\n')
-    print('The bias:\n' + str(b) + '\n')
-    draw(trainingData, w[0][0], w[0][1], b[0], dataName)
+        print('Not Find proper w and b. The maxiunm num of epoch: ' + str(epoch))
+    print('The weight: ' + str(w))
+    print('The bias: ' + str(b))
+    draw(trainingData, w[0][0], w[0][1], b[0][0], dataName)
 
 if __name__ == "__main__":
     main()

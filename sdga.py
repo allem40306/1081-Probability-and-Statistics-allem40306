@@ -100,11 +100,11 @@ def main():
 
     for alpha in (0.1, 0.2, 0.3, 0.4, 0.5):
         w1, b1, epoch = training(trainingData, alpha)
-        print('Number of hidden neurons = 1')
-        print('Learning rates = ' + '%.1f'%(alpha))
-        print('epochs = ' + str(epoch))
-        print('The weight:' + str(w1))
-        print('The bias:' + str(b1) + '\n')
+        print('Number of hidden neurons: 1')
+        print('Learning rates: ' + '%.1f'%(alpha))
+        print('epochs: ' + str(epoch))
+        print('The weight: ' + str(w1))
+        print('The bias: ' + str(b1) + '\n')
         draw(trainingData, w1[0][0], w1[0][1], b1[0][0], dataName+'_'+str(alpha))
 
 if __name__ == '__main__':
