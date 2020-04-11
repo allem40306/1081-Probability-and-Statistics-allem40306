@@ -2,11 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # return a = f(w, p, b) = wp + b
-def f(w, p, b):
-    w = np.reshape(w, (1, 2))
-    p = np.reshape(p, (2, 1))
-    b = np.reshape(b, (1, 1))
-    res = np.dot(w, p) + b
+def f(w, p):
+    w = np.reshape(w, (1, 3))
+    p = np.reshape(p, (3, 1))
+    res = np.dot(w, p)
     a = []
     # hardLimit
     for row in res:
@@ -18,37 +17,39 @@ def f(w, p, b):
     return a
 
 # training the weight w and bias b based on training data
-def training(w, b, trainingData):
+def training(w, trainingData):
     epoch = 1
     isFind = 0 # isFind = 1 mean find proper w and b that can classify testing_data
     while 1:
         ok = 1 # ok = 1 mean w and b don't change in one epoch
         for data in trainingData:
-            p = data[0] # 2*1
+            p = data[0] # 3*1
             t = data[1] # 1
-            a = f(w, p, b)
+            a = f(w, p)
             if a == t:
                 continue
             ok = 0
             e = np.reshape(t, (1, 1)) - np.reshape(a, (1, 1))
-            w = w + e * np.reshape(p, (1, 2))
-            b = b + e
+            w = w + e * np.reshape(p, (1, 3))
         if ok == 1:
             isFind = 1
             break
         if epoch == 1000:
             break
         epoch += 1
-    return w, b, epoch, isFind
+    return w, epoch, isFind
 
-def draw(trainingData, a, b, c, picName):
+def draw(trainingData, w, picName):
+    c = w[0][0]
+    a = w[0][1]
+    b = w[0][2]
     px1 = []
     py1 = []
     px2 = []
     py2 = []
     for data in trainingData:
-        x = data[0][0]
-        y = data[0][1]
+        x = data[0][1]
+        y = data[0][2]
         t = data[1][0]
         if t == 1:
             px1.append(x)
@@ -72,31 +73,29 @@ def draw(trainingData, a, b, c, picName):
     plt.savefig('plc_' + picName + '.png')
     plt.close()
 
-
-
-def main():
-    num = input("choose dataset [1~4]: ")
-    dataName = 'dataset' + num
+def main(num):
+    dataName = 'dataset' + str(num)
     file = open(dataName + '.txt', 'r', encoding='UTF-8')
     data = file.readlines()
     trainingData = []
 
     for line in data:
         p1, p2, t = line.replace('\n', '').split(',')
-        trainingData.append([[int(p1), int(p2)], [int(t)]])
-    initial_w = np.reshape([1, 0], (1, 2))
-    initial_b = np.reshape([1], (1, 1))
-    w, b, epoch, isFind = training(initial_w, initial_b, trainingData)
+        trainingData.append([[1, int(p1), int(p2)], [int(t)]])
+    initial_w = np.reshape([1, 2, 3], (1, 3))
+    w, epoch, isFind = training(initial_w, trainingData)
 
     print('The initial weight: ' + str(initial_w))
-    print('The initial bias: ' + str(initial_b))
     if isFind == 1:
         print('Find proper w and b. The num of epoch: ' + str(epoch))
     else:
         print('Not Find proper w and b. The maxiunm num of epoch: ' + str(epoch))
     print('The weight: ' + str(w))
-    print('The bias: ' + str(b))
-    draw(trainingData, w[0][0], w[0][1], b[0][0], dataName)
+    print()
+    draw(trainingData, w, dataName)
 
 if __name__ == "__main__":
-    main()
+    main(1)
+    main(2)
+    main(3)
+    main(4)
