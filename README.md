@@ -4,4 +4,6 @@
 * 需要安裝 numpy
 * 需用 cmd 編譯
 * 輸入檔：dataset1, dataset2, dataset3, dataset4
-* 當程式開始，請輸入檔案編號(1~4)
+* 執行檔：pla.py, sdga.py
+* 輸出結果在 cmd 視窗中
+* 圖片會在相同資料夾中
