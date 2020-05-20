@@ -17,9 +17,21 @@ def draw(points, testPointsX, testPointsY, pictureName, num):
     if num == 1:
         plt.plot([points[i][0] for i in range(0,len(points))],
             [points[i][1] for i in range(0,len(points))], 'yo')
-    else:
+    elif num == 2:
         plt.plot([i / 1000 for i in range(2000, 9000 + 1)],
-            [float(3*math.exp(i / 1000) * math.sin(i / 1000) + math.cos(i / 1000) + 6.9)
+            [3*math.exp(i / 1000) * math.sin(i / 1000) + math.cos(i / 1000) + 6.9
+             for i in range(2000, 9000 + 1)], 'yo')
+    elif num == 3:
+        plt.plot([i / 1000 for i in range(2000, 9000 + 1)],
+            [4 * (i / 1000) * (i / 1000) * math.sin((i / 1000)) - 3 * math.cos((i / 1000)) + 7.5
+             for i in range(2000, 9000 + 1)], 'yo')
+    elif num == 4:
+        plt.plot([i / 1000 for i in range(2000, 9000 + 1)],
+            [2 * math.exp(2 * (i / 1000)) - 7 * math.sin((i / 1000)) + 8.8
+             for i in range(2000, 9000 + 1)], 'yo')
+    elif num == 5:
+        plt.plot([i / 1000 for i in range(2000, 9000 + 1)],
+            [4.4 * math.exp(math.sin(i / 1000)) - 9.6
              for i in range(2000, 9000 + 1)], 'yo')
     # testPointsY = [float(3*math.exp(testPointsX[i]) * math.sin(testPointsX[i]) + math.cos(testPointsX[i]) + 6.9) for i in range(0, len(testPointsX)) ]
     plt.plot(testPointsX, testPointsY, 'r')
