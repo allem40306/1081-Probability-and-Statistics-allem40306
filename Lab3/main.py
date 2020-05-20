@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import math
 
 def readPoints(filename):
     points = []
@@ -10,6 +11,23 @@ def readPoints(filename):
         a, b = line.replace('\n','').split(' ')
         points.append([float(a),float(b)])
     return points
+
+def draw(points, testPointsX, testPointsY, pictureName, num):
+    plt.figure('Draw')
+    if num == 1:
+        plt.plot([points[i][0] for i in range(0,len(points))],
+            [points[i][1] for i in range(0,len(points))], 'yo')
+    else:
+        plt.plot([i / 1000 for i in range(2000, 9000 + 1)],
+            [float(3*math.exp(i / 1000) * math.sin(i / 1000) + math.cos(i / 1000) + 6.9)
+             for i in range(2000, 9000 + 1)], 'yo')
+    # testPointsY = [float(3*math.exp(testPointsX[i]) * math.sin(testPointsX[i]) + math.cos(testPointsX[i]) + 6.9) for i in range(0, len(testPointsX)) ]
+    plt.plot(testPointsX, testPointsY, 'r')
+    plt.draw()
+    # plt.pause(5)
+    plt.suptitle(pictureName)
+    plt.savefig(pictureName + '.png')
+    plt.close()
 
 def difftable1(points):
     sz = len(points)
@@ -33,13 +51,12 @@ def difftable2(points):
             arr[j][i] = (arr[j + 1][i - 1] - arr[j][i - 1])
     return arr
 
-def fact(n):
-    ret = 1
-    for i in range(1, n + 1):
-        ret *= i
-    return ret
+def generatePoints():
+    testPointsX = [i / 1000 for i in range(2000, 9000 + 1)]
+    testPointsY = [0 for i in range(0, len(testPointsX)) ]
+    return testPointsX, testPointsY
 
-def lagrange(points, x):
+def Lagrange(points, x):
     ret = 0.0
     for i in range(len(points)):
         xi, yi = points[i]
@@ -101,27 +118,6 @@ def GaussForward(points, table, x):
         ret += tmp * table[row][i]
     return ret
 
-def GaussForward(points, table, x):
-    sz = len(points)
-    row = int(len(points) // 2)
-    S = (x - points[row][0]) / (points[1][0] - points[0][0])
-    ret = table[row][0]
-    tmp = 1
-    # print(S)
-    for i in range(1, sz):
-        # print(str(i) + ':')
-        if i % 2 == 0:
-            row -= 1
-            tmp *= (S - i // 2)
-            # print(str(-i // 2))
-        else:
-            tmp *= (S + (i - 1) // 2)
-            # print(str((i - 1) // 2))
-        tmp /= i
-        # print(tmp, table[row][i])
-        ret += tmp * table[row][i]
-    return ret
-
 def GaussBackward(points, table, x):
     sz = len(points)
     row = int(len(points) // 2)
@@ -146,9 +142,41 @@ def main():
     points2 = readPoints('test' + num + '-2.txt')
     table1 = difftable1(points1)
     table2 = difftable2(points2)
+
+    testPointsX, testPointsY = generatePoints()
+    for i in range(0,len(testPointsX)):
+        testPointsY[i] = round(Lagrange(points1, testPointsX[i]),3)
+    draw(points1, testPointsX, testPointsY, 'Lagrange' + str(num), int(num))    
+
+    testPointsX, testPointsY = generatePoints()
+    for i in range(0,len(testPointsX)):
+        testPointsY[i] = round(NewtonDividedDifference(points1, table1, testPointsX[i]),3)
+    draw(points1, testPointsX, testPointsY, 'NewtonDividedDifference' + str(num), int(num))
+
+    testPointsX, testPointsY = generatePoints()
+    for i in range(0,len(testPointsX)):
+        testPointsY[i] = round(GrogoryNewtonForward(points2, table2, testPointsX[i]),3)
+    draw(points1, testPointsX, testPointsY, 'GrogoryNewtonForward' + str(num), int(num))
+
+    testPointsX, testPointsY = generatePoints()
+    for i in range(0,len(testPointsX)):
+        testPointsY[i] = round(GrogoryNewtonBackward(points2, table2, testPointsX[i]),3)
+    draw(points1, testPointsX, testPointsY, 'GrogoryNewtonBackward' + str(num), int(num))
+
+    testPointsX, testPointsY = generatePoints()
+    for i in range(0,len(testPointsX)):
+        testPointsY[i] = round(GaussForward(points2, table2, testPointsX[i]),3)
+    draw(points1, testPointsX, testPointsY, 'GaussForward' + str(num), int(num))
+
+    testPointsX, testPointsY = generatePoints()
+    for i in range(0,len(testPointsX)):
+        testPointsY[i] = round(GaussBackward(points2, table2, testPointsX[i]),3)
+    draw(points1, testPointsX, testPointsY, 'GaussBackward' + str(num), int(num))
+
+
     # for item in points1:
     #     x, y = item
-    #     print(lagrange(points1, x), y)
+    #     print(Lagrange(points1, x), y)
     #     print(NewtonDividedDifference(points1, table1, x), y)
     # for item in points2:
     #     x, y = item
