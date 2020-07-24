@@ -2,6 +2,7 @@ import sys
 import math
 import numpy as np
 import cvxopt
+import time
 
 def readData():
     file = open('data.in', 'r', encoding="utf-8")
@@ -84,8 +85,13 @@ def test(data_X, data_Y, w, b):
 
 def main():
     data_X, data_Y = readData()
+    Start = time.time()
     alpha = soft_limit(data_X, data_Y)
     w,b = getWeightandBias(data_X, data_Y, alpha)
+    End = time.time()
+    print(Start)
+    print(End)
+    print(End - Start)
     print(w)
     test(data_X, data_Y, w, b)
 
