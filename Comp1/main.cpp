@@ -288,7 +288,7 @@ int main(int argc, char *argv[]) {
   FOR(ti, 0, 30) {
     srand(ti); // set random seed
     vector<Individual> population;
-    FOR(i, 0, D) // generate L individual
+    FOR(i, 0, D) // generate D individual
     {
       double *chromosome = generate_chromosome();
       population.PB(Individual(chromosome));
