@@ -81,28 +81,28 @@ Mat Mul(Mat lhs, Mat rhs) {
   return res;
 }
 
+vector<double> reshapeTmp;
 Mat reshape(Mat mat, int _M, int _N) {
   assert(mat.M * mat.N == _M * _N);
   Mat res(_M, _N);
-  // cout << "\n before mat:---\n"; mat.output();
+  reshapeTmp.clear();
   FOR(i, 0, mat.M)
-  FOR(j, 0, mat.N) {
-    res.x[j * res.M + i] = mat.x[i * mat.M + j];
-  }
-  // cout << "\n after res:---\n"; res.output();
+  FOR(j, 0, mat.N) { reshapeTmp.push_back(mat.x[i * mat.M + j]); }
+  int cnt = 0;
+  FOR(i, 0, res.M)
+  FOR(j, 0, res.N) { res.x[i * res.M + j] = reshapeTmp[cnt++]; }
   return res;
 }
 
 Mat T(Mat mat) {
   Mat res(mat.N, mat.M);
   FOR(i, 0, mat.M)
-  FOR(j, 0, mat.N) {
-    res.x[j * res.M + i] = mat.x[i * mat.M + j];
-  }
+  FOR(j, 0, mat.N) { res.x[j * res.M + i] = mat.x[i * mat.M + j]; }
   return res;
 }
 
-void output(Mat mat) {
+void output(string name, Mat mat) {
+  cout << name << '\n';
   FOR(i, 0, mat.M)
   FOR(j, 0, mat.N) cout << mat.x[i * mat.M + j] << " \n"[j == mat.N - 1];
 }
@@ -136,81 +136,113 @@ Mat activation(Mat mat) {
   return mat;
 }
 
+int maxClass(Mat mat) {
+  assert(mat.N == 1);
+  int res = 0;
+  FOR(i, 1, mat.M) {
+    if (mat.x[res * mat.M] < mat.x[i * mat.M]) {
+      res = i;
+    }
+  }
+  return res;
+}
+
 struct Data {
   vector<double> p, t;
 };
 
-Data training[200], testing[200];
+vector<Data> training, testing;
 
-struct Backpropagation {
-  int numOfInput = 4;
-  int numOfOutput = 3;
-  int numOfNeroun = 1;
-  double alpha = 0.1;
-  int end_Epoch = 100;
-  void run() {
-    int epoch = 0;
-    Mat w1(numOfNeroun, numOfInput);
-    Mat b1(numOfNeroun, 1);
-    Mat w2(numOfOutput, numOfNeroun);
-    Mat b2(numOfOutput, 1);
-    while (true) {
-      ++epoch;
-      cout << "eopch " << epoch << '\n';
-      FOR(ti, 0, 100) {
-        Mat p = Mat(numOfInput, 1, training[0].p);
-        Mat t = Mat(numOfOutput, 1, training[0].t);
-        Mat ah1 = reshape(f(w1 * p + b1), numOfNeroun, 1);
-        Mat o = reshape(f(w2 * ah1 + b2), numOfOutput, 1);
-        Mat d2 = Mul((t - o), reshape(activation(o), numOfOutput, 1));
-        Mat d1 = Mul(T(w2) * d2,
-                     reshape(activation(ah1), numOfNeroun, 1));
-        w2 = w2 + (2 * alpha * d2 * ah1);
-        b2 = b2 + (2 * alpha * d2);
-        w1 = w1 + (2 * alpha * d1 * reshape(p, 1, numOfInput));
-        b1 = b1 + (2 * alpha * d1);
-      }
-      Mat totalError(numOfOutput, 1);
-      Mat p,t,ah1,o;
-      FOR(i, 0, 100) {
-        p = Mat(numOfInput, 1, training[0].p);
-        t = Mat(numOfOutput, 1, training[0].t);
-        ah1 = reshape(f(w1 * p + b1), numOfNeroun, 1);
-        o = reshape(f(w2 * ah1 + b2), numOfOutput, 1);
-        totalError = totalError + abs(t - o);
-      }
-      if (epoch >= end_Epoch || max(totalError) / 120 < 0.2)
-        break;
-    }
-    w1.output();
-  }
-};
+
+const int numOfInput = 4;
+const int numOfOutput = 3;
+const int numOfNeroun = 1;
+double alpha = 0.1;
+const int end_Epoch = 1000;
+
+Mat w1(numOfNeroun, numOfInput);
+Mat b1(numOfNeroun, 1);
+Mat w2(numOfOutput, numOfNeroun);
+Mat b2(numOfOutput, 1);
 
 void readData() {
-  vector<double> p(4), t(3);
-  string s;
   freopen("iris_training_data.txt", "r", stdin);
-  int di = 0;
-  while (cin >> p[0]) {
-    FOR(i, 1, 4) { cin >> p[i]; }
+  string s;
+  Data tmp;
+  training.clear();
+  testing.clear();
+  tmp.p.resize(4);
+  tmp.t.resize(3);
+  int cnt = 0;
+  while (cin >> tmp.p[0]) {
+    FOR(i, 1, 4) { cin >> tmp.p[i]; }
     cin >> s;
-    t[0] = t[1] = t[2] = 0.1;
+    tmp.t[0] = tmp.t[1] = tmp.t[2] = 0.1;
     if (s == "setosa") {
-      t[0] = 0.9;
+      tmp.t[0] = 0.9;
     } else if (s == "versicolor") {
-      t[1] = 0.9;
+      tmp.t[1] = 0.9;
     } else {
-      t[2] = 0.9;
+      tmp.t[2] = 0.9;
     }
-    training[di].p = p;
-    training[di].t = t;
-    // cout << training[di].p.size() << '\n';
+    if (cnt < 120)
+      training.push_back(tmp);
+    else
+      testing.push_back(tmp);
+    ++cnt;
   }
-  // freopen("iris_testing_data","r",stdin);
+}
+
+void trainData() {
+  int epoch = 0;
+  while (true) {
+    ++epoch;
+    FOR(ti, 0, training.size()) {
+      Mat p = Mat(numOfInput, 1, training[ti].p);
+      Mat t = Mat(numOfOutput, 1, training[ti].t);
+      Mat ah1 = reshape(f(w1 * p + b1), numOfNeroun, 1);
+      Mat o = reshape(f(w2 * ah1 + b2), numOfOutput, 1);
+      Mat d2 = Mul((t - o), reshape(activation(o), numOfOutput, 1));
+      Mat d1 = Mul(T(w2) * d2, reshape(activation(ah1), numOfNeroun, 1));
+      w2 = w2 + (2 * alpha * (d2 * ah1));
+      b2 = b2 + (2 * alpha * d2);
+      w1 = w1 + (2 * alpha * (d1 * reshape(p, 1, numOfInput)));
+      b1 = b1 + (2 * alpha * d1);
+    }
+    // Mat totalError(numOfOutput, 1);
+    // Mat p, t, ah1, o;
+    // FOR(i, 0, 100) {
+    //   p = Mat(numOfInput, 1, training[i].p);
+    //   t = Mat(numOfOutput, 1, training[i].t);
+    //   ah1 = reshape(f(w1 * p + b1), numOfNeroun, 1);
+    //   o = reshape(f(w2 * ah1 + b2), numOfOutput, 1);
+    //   totalError = totalError + abs(t - o);
+    // }
+    // cout << ' ' << (double)max(totalError) / 120.0 << '\n';
+    if (epoch >= end_Epoch)
+      break;
+  }
+}
+
+double testData(vector<Data> const &data) {
+  int ok = 0;
+  FOR(ti, 0, data.size()) {
+    Mat p = Mat(numOfInput, 1, data[ti].p);
+    Mat t = Mat(numOfOutput, 1, data[ti].t);
+    Mat ah1 = reshape(f(w1 * p + b1), numOfNeroun, 1);
+    Mat o = reshape(f(w2 * ah1 + b2), numOfOutput, 1);
+    if (maxClass(o) == maxClass(t)) {
+      ++ok;
+    }
+  }
+  double accurate_rate = ((double)ok / double(data.size())) * 100;
+  return accurate_rate;
 }
 
 int main() {
-  Backpropagation bp;
   readData();
-  bp.run();
+  trainData();
+  double training_accurate_rate = testData(training);
+  double testing_accurate_rate = testData(testing);
+  cout << training_accurate_rate << ' ' << testing_accurate_rate << '\n';
 }
