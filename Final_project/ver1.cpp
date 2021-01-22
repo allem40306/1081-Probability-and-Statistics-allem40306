@@ -336,10 +336,7 @@ bool isInRate(int tar) {
 
 void mutation(Individual &individual) // Random resetting
 {
-  FOR(i, 0, 5) if (isInRate(20)) {
-    individual.chromosome[i] = generate_value();
-  }
-  FOR(i, 5, chormosome_size) if (isInRate(5)) {
+  FOR(i, 0, chormosome_size) if (isMutation()) {
     individual.chromosome[i] = generate_value();
   }
   return;
