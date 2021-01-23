@@ -1,3 +1,7 @@
+# 題目
+寫出 Lagrange, NewtonDividedDifference, GrogoryNewtonForward, GrogoryNewtonBackward, GaussForward, GaussBackward，並和實驗數據比對
+
+# 執行說明
 * 程式碼：main.py
 * 測資：test1(2)-`problem_number`.txt
 * 結果：`algorithm_name``problem_number`.png
