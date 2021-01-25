@@ -1,4 +1,8 @@
-# Machine-Learning
+# 題目
+* 撰寫感知器學習演算法(Perceptron Learning Algorithm; PLA) 與隨機梯度下降法 (Stochastic Gradient Descent Algorithm; SGDA)
+* 比較兩者於分類問題之效果。
+
+# 執行說明
 
 * python 版本 3.7.3
 * 需要安裝 numpy
