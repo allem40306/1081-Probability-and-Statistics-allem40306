@@ -1,9 +1,4 @@
-# 類神經網路 作業二
-* 系級：資工三甲
-* 學號：406261597
-* 姓名：林子傑
-
-## 作業對應檔案
+# 作業對應檔案
 * One neuron 
   * neuron1_run.py
 * Two neuron
@@ -13,7 +8,7 @@
 * Four neuron
   * neuron4_run.py
 
-## Usage
+# 執行說明
 * python環境
   * 版本 python 3.7.3
   * 需要安裝 numpy
