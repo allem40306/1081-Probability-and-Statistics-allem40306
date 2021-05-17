@@ -1,7 +1,5 @@
-% read image and convert to grayscale
-im = imread('lena.tif');
-im(:,:,4) = [];
-grayIm = rgb2gray(im);
+% read image
+grayIm = imread('lena.tif');
 grayIm2 = imread('headCT.tif');
 grayIm3 = imread('dentalXray.tif');
 

@@ -1,6 +1,4 @@
 im = imread('lena.tif');
-im(:,:,4) = [];
-im = rgb2gray(im);
 [m,n] = size(im);
 
 F = fft2(im);
