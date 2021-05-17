@@ -22,7 +22,6 @@ for i = 1:3
         subplot(10, 3, plotno), imshow(grayI2), title(S(i) + j);
         plotno = plotno + 3;
         imwrite(grayI2,"grayCat"+ i + "_" + j + ".jpg");
-
     end
 end
 
