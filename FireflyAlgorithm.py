@@ -46,7 +46,8 @@ class FireflyAlgorithm():
     def init_ffa(self): # initialize fireflies
         for i in range(self.NP):
             for j in range(self.D):
-                self.Fireflies[i][j] = random.uniform(0, 1) * (256.0/float(self.D+1)) + (256.0/float(self.D+1)) * float(j)
+                self.Fireflies[i][j] = random.uniform(0, 1) * 255 # Method1 
+                # self.Fireflies[i][j] = random.uniform(0, 1) * (256.0/float(self.D+1)) + (256.0/float(self.D+1)) * float(j) # Method 2
             self.Fireflies[i] = sorted(self.Fireflies[i])
             self.Fitness[i] = self.cal_fitness(i)  # initialize attractiveness
     

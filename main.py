@@ -1,12 +1,20 @@
 from FireflyAlgorithm import *
 from ImageThreshold import *
+import os
 
-images = ['bird','bird2','cameraman','canoe','coins']#,'dog','goldhill','lena','office','onion','pepper']
+images = ['bird','bird2','cameraman','canoe','coins', 'dog','goldhill','lena','office','onion','pepper']
 num_of_run = 30
+input_folder = 'picture/'
+output_folder = 'out/'
+
+try:
+    os.mkdir(output_folder)
+except:
+    pass
 
 for image_name in images:
-    for num_of_threshold in range(2,4):
-        file = open(image_name + '_' + str(num_of_threshold) + '.txt', 'w')
+    for num_of_threshold in range(2,5):
+        file = open(output_folder + image_name + '_' + str(num_of_threshold) + '.txt', 'w')
         sum_fitness = 0.0
         sum_time = 0.0
         sum_psnr = 0.0
@@ -16,9 +24,9 @@ for image_name in images:
 
         for run in range(num_of_run):
             print(image_name, num_of_threshold,run)
-            Algorithm = FireflyAlgorithm(D=num_of_threshold, NP=50, ML=100, alpha=0.01, beta0=1, gamma=1.0, img_name=image_name+'.png')
+            Algorithm = FireflyAlgorithm(D=num_of_threshold, NP=50, ML=100, alpha=0.01, beta0=1, gamma=1.0, img_name=input_folder + image_name+'.png')
             [threshold, fitness, used_time] = Algorithm.Run()
-            Psnr = ImageThreshold(image_name+'.png',threshold)
+            Psnr = ImageThreshold(input_folder + image_name+'.png',threshold)
             psnr = Psnr.Run()
 
             sum_fitness += fitness
