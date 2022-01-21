@@ -2,6 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int isPrime(long long n)
+{
+    long long i;
+    for(i = 2; i * i <= n; ++i)
+    {
+        if(n % i == 0)return 0;
+    }
+    return 1;
+}
+
 int main(int argc, char **argv)
 {
     int id, p;
@@ -49,20 +59,22 @@ void manager(int p, int id)
 {
     int src, res = 0;
     MPI_Status status;   /* Info about message */
-    int L = 33550000, ans = 0;
-    int terminated = 0;
+    int L = 2;
+    int terminated = 0, cnt = 0;
 
     do
     {
         MPI_Recv(&res, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         src = status.MPI_SOURCE;
 
-        if (res)
+        if (res != 0)
         {
-            ans = res;
+            ++cnt;
+            printf ("%lld\n", (1LL << (res-1LL)) * ((1LL << (res)) - 1LL));
+            fflush (stdout);
         }
 
-        if (ans == 0)
+        if (cnt < 8 && L <= 31)
         {
             MPI_Send(&L, 1, MPI_INT, src, 0, MPI_COMM_WORLD);
             ++L;
@@ -74,34 +86,22 @@ void manager(int p, int id)
             ++terminated;
         }
     } while (terminated < (p - 1));
-    printf ("%d\n", ans);
-    fflush (stdout);
 }
 
 void worker(int p, int id)
 {
-    int len;
     MPI_Status status;   /* Info about message */
-    int i;
-    int tar = 0, tmp;
+    int tar = 0;
+    long long tmp = 0;
     MPI_Send(&tar, 0, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
     do{
         MPI_Recv(&tar, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
         if(tar == 0)
             break;
-        
-        tmp = 1;
-        for(i = 2; i <= tar / 2; ++i)
-        {
-            if(tar % i == 0)
-                tmp += i;
-        }
-
-        if(tmp != tar)
-        {
+        tmp = (1LL << (tar)) - 1LL;
+        if(isPrime(tmp) == 0)
             tar = 0;
-        }
 
         MPI_Send(&tar, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }while(1);
