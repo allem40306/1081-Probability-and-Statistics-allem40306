@@ -1,7 +1,4 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import sys
-import math
 
 def readPoints(filename):
     points = []
@@ -11,7 +8,6 @@ def readPoints(filename):
         a, b = line.replace('\n','').split(' ')
         points.append([float(a),float(b)])
     return points
-
 
 def draw(points1, points2):
     plt.figure('Draw')
