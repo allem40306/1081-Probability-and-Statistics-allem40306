@@ -1,4 +1,8 @@
-# Metaheuristic
+# 1092 超啟發式演算法
+* 教師：廖容佐
+* 期末專案：Firefly Algorithm with Different Methods for Multilevel Image Thresholding Selection
+
+## 執行步驟
 * 參考程式碼: https://github.com/firefly-cpp/FireflyAlgorithm
 * 環境: python 3.7.2
 * 執行: `py main.py`
