@@ -1,10 +1,3 @@
-//
-//  main.cpp
-//  STL hw04_02
-//
-//  Created by Mark Mac on 2019/5/25.
-//  Copyright © 2019 Mark Mac. All rights reserved.
-//
 #include <iostream>
 #include <regex>
 #include <string>

@@ -52,6 +52,7 @@ template <typename T>
 bool operator!=(const T& node, T val){
     return !(node.data == val);
 }
+
 // insert a new value into the list in sorted order
 template <typename T>
 void Insert( LinkedList<T> StartPtr, T value )
@@ -61,7 +62,7 @@ void Insert( LinkedList<T> StartPtr, T value )
     ListNodePtr<T> previousPtr; // pointer to previous node in list
     ListNodePtr<T> currentPtr; // pointer to current node in list
 
-    newPtr = (ListNodePtr<T>) malloc( sizeof( ListNode<T> ) ); // create node
+    newPtr = (ListNodePtr<T>) malloc( sizeof( ListNode<T> ) );
 
     if ( newPtr != NULL ) { // is space available
         newPtr->data = value; // place value in node
@@ -74,22 +75,22 @@ void Insert( LinkedList<T> StartPtr, T value )
         while ( currentPtr != NULL && value > currentPtr->data ) {
             previousPtr = currentPtr; // walk to ...
             currentPtr = currentPtr->nextPtr; // ... next node
-        } // end while
+        }
 
         // insert new node at beginning of list
         if ( previousPtr == NULL ) {
             newPtr->nextPtr = *sPtr;
             *sPtr = newPtr;
-        } // end if
+        }
         else { // insert new node between previousPtr and currentPtr
             previousPtr->nextPtr = newPtr;
             newPtr->nextPtr = currentPtr;
-        } // end else
-    } // end if
+        }
+    }
     else {
         printf( "%c not inserted. No memory available.\n", value );
-    } // end else
-} // end function insert
+    }
+}
 
 // delete a list element
 template<typename T>
@@ -106,7 +107,7 @@ T Delete( LinkedList<T> StartPtr, T value )
         *sPtr = ( *sPtr )->nextPtr; // de-thread the node
         free( tempPtr ); // free the de-threaded node
         return value;
-    } // end if
+    }
     else {
         previousPtr = *sPtr;
         currentPtr = ( *sPtr )->nextPtr;
@@ -115,7 +116,7 @@ T Delete( LinkedList<T> StartPtr, T value )
         while ( currentPtr != NULL && currentPtr->data != value ) {
             previousPtr = currentPtr; // walk to ...
             currentPtr = currentPtr->nextPtr; // ... next node
-        } // end while
+        }
 
         // delete node at currentPtr
         if ( currentPtr != NULL ) {
@@ -123,20 +124,19 @@ T Delete( LinkedList<T> StartPtr, T value )
             previousPtr->nextPtr = currentPtr->nextPtr;
             free( tempPtr );
             return value;
-        } // end if
-    } // end else
+        }
+    }
 
     return '\0';
-} // end function delete
+}
 
 // return 1 if the list is empty, 0 otherwise
 template <typename T>
 int isEmpty( ListNodePtr<T> sPtr )
 {
     return sPtr == NULL;
-} // end function isEmpty
+}
 
-// print the list
 template<typename T>
 void printList( LinkedList<T> StartPtr )
 {
@@ -144,7 +144,7 @@ void printList( LinkedList<T> StartPtr )
     // if list is empty
     if ( isEmpty( ptr ) ) {
         puts( "List is empty.\n" );
-    } // end if
+    }
     else {
         puts( "The list is:" );
 
@@ -152,11 +152,11 @@ void printList( LinkedList<T> StartPtr )
         while ( ptr != nullptr ) {
             cout << ptr->data << " --> ";
             ptr = ptr->nextPtr;
-        } // end while
+        }
 
         puts( "NULL\n" );
-    } // end else
-} // end function printList
+    }
+}
 
 template <typename T>
 void findList(LinkedList<T> StartPtr, const T& val){
