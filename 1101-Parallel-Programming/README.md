@@ -1,7 +1,6 @@
-# Parallel-Programming
-
-* 110 學年上學期 平行運算
+# 1101 平行運算
 * 教授：黃乾鋼
+* diagram.xlsx 用於計算 Performance Benchmark
 
 ## 相關參考
 
