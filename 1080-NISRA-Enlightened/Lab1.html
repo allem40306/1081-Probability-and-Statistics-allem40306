@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <title>Lab</title>
+</head>
+
+<body>
+        <div>
+            <h1>驗證你的資料</h1> 
+            帳號<input type="text" id="account"/><br>
+            電話<input type="text" id="phone"/><br>
+            <button type="button"id="validateDataButton">驗證</button>
+            <button type="button"id="clearButton">清除</button>
+        </div>        
+</body>
+
+<script>
+        function isalpha(ch)
+        {
+            return ('a' <= ch && ch <= 'z')
+            || ('A' <= ch && ch <= 'Z');
+        }
+        
+        function isnum(ch)
+        {
+            return ('0' <= ch && ch <= '9');
+        }
+        
+        
+        $(document).ready(function(){
+            $("#successMessenge").hide();
+            $("#errorMessenge").hide();
+        })
+        
+        $("#validateDataButton").click(function(){
+            let account = $("#account").val();
+            let phone = $("#phone").val();
+            let ok = true;
+            if(account.length < 5 || account.length > 12 || !isalpha(account[0])){
+                ok = false;
+            }
+            for(let i = 1; i < account.length; ++i){
+                if(!isalpha(account[i]) && !isnum(account[i])){
+                    ok = false;
+                }
+            }
+            if(phone.length !== 10 || phone[0] !== '0' || phone[1] !== '9'){
+                ok = false;
+            }
+            for(let i = 1; i < phone.length; ++i){
+                if(!isnum(phone[i])){
+                    ok = false;
+                }
+            }
+            if(ok){
+                alert("correct");
+            }
+            else{
+                alert("error");
+            }
+        });
+        
+        $("#clearButton").click(function(){
+            $("#account").val("");
+            $("#phone").val("");
+        })
+        </script>
+</html>

@@ -1,0 +1,15 @@
+NISRA_{fgdhsfgixjdcfdbf}
+
+題解：
+文字上有許多段落<p>，每個段落都有一個class，flag在class4上，要拿到flag可用DOM將所有class4的東西找出來，再一一取出包含其中的文字，或是用JQuery，把所有段落隱藏，然後顯示class4的內容。
+
+DOM
+
+var group = document.getElementsByClassName("class4");
+for(let i = 0; i != group.length; ++i)
+    console.log(group[i].innerHTML);
+
+JQuery
+
+$("p").hide();
+$(".class4").show();

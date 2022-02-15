@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DOM</title>
+</head>
+<body>
+    <h1 class="h-series">這是一個標體</h1>
+    <h2 class="h-series">這是另一個標題</h2>
+    <button onclick="changeH1Color()">改變H1顏色</button>
+    <button onclick="changeHseriesColor()">改變H1,H2顏色</button>
+    <script>
+        function changeH1Color(){
+            var res = document.getElementsByTagName("h1");
+            res[0].style.color = "red";
+        }
+        
+        function changeHseriesColor(){
+            var res = document.getElementsByClassName("h-series");
+            for(let i = 0; i != res.length; ++i)
+            {
+                res[i].style.color = "green";
+            }
+        }
+        
+    </script>
+</body>
+</html>
